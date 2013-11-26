@@ -40,7 +40,8 @@
     "grunt-shell": "~0.4.0",
     "semver": "~2.1.0",
     "lodash": "~2.1.0",
-    "browserstacktunnel-wrapper": "~1.1.1"
+    "browserstacktunnel-wrapper": "~1.1.1",
+    "protractor": "~0.13.0"
   },
   "licenses": [
     {

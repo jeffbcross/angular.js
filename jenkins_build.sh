@@ -37,6 +37,10 @@ grunt test:unit --browsers $BROWSERS --reporters=dots,junit --no-colors --no-col
 # END TO END TESTS #
 grunt test:e2e --browsers $BROWSERS_E2E --reporters=dots,junit --no-colors --no-color
 
+# Protractor Tests
+
+./node_modules/.bin/protractor tests/protractor/protractorConf.js
+
 # Promises/A+ TESTS #
 grunt test:promises-aplus --no-color
 
