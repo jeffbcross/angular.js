@@ -504,6 +504,7 @@ angular.module('ngResource', ['ng']).
           var hasBody = /^(POST|PUT|PATCH)$/i.test(action.method);
 
           Resource[name] = function () {
+            var args = [];
             if (arguments.length > 4) {
               throw $resourceMinErr('badargs',
                 "Expected up to 4 arguments " +
@@ -515,23 +516,34 @@ angular.module('ngResource', ['ng']).
             var params, data, success, error;
 
             // Find success and error callbacks
-            for (var i = 0; i < arguments.length; i++) {
-              if (isFunction(arguments[i])) {
-                if (success) error = arguments[i];
-                else success = arguments[i];
-                arguments[i] = undefined; // reset to avoid setting data or params to a function
+            forEach(arguments, function(arg) {
+              if (isFunction(arg)) {
+                if (success) error = arg;
+                else success = arg;
               }
-            }
-
-            // Set data and params
-            if (arguments.length <= 2 && hasBody) {
-              data = arguments[0];
-            } else {
-              params = arguments[0];
-              data = arguments[1];
-            }
+              else {
+                args.push(arg);
+              }
+            });
 
             var isInstanceCall = this instanceof Resource;
+
+            // Set data and params
+            if (isInstanceCall) {
+              data = this;
+              params = args[0];
+            }
+            else if (hasBody && args.length === 2) {
+              params = args[0];
+              data = args[1];
+            }
+            else if (args.length < 2 && hasBody) {
+              data = args[0];
+            } else {
+              params = args[0];
+              data = args[1];
+            }
+
             var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
             var httpConfig = {};
             var responseInterceptor = action.interceptor && action.interceptor.response ||

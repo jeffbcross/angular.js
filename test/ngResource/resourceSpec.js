@@ -381,6 +381,19 @@ describe("resource", function() {
   });
 
 
+  it('should call append params to class and instance url before passing to httpBackend', function() {
+    $httpBackend.expect('POST', '/activity/1').respond();
+    var R = $resource('/activity/:id');
+
+    var inst = new R();
+    inst.$save({id:1});
+
+    $httpBackend.expect('POST', '/activity/2').respond();
+    R.save({id: 2}, {});
+    $httpBackend.flush();
+  });
+
+
   it('should not throw TypeError on null default params', function() {
     $httpBackend.expect('GET', '/Path').respond('{}');
     var R = $resource('/Path', {param: null}, {get: {method: 'GET'}});
