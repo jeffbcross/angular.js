@@ -663,7 +663,7 @@ describe('angular', function() {
 
       //encode '/', ';' and ' ''
       expect(encodeUriSegment('/; /;')).
-        toEqual('%2F%3B%20%2F%3B');
+        toEqual('%2F;%20%2F;');
     });
   });
 

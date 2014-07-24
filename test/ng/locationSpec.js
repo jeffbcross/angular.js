@@ -1,7 +1,7 @@
 /* global LocationHashbangUrl: false, LocationHtml5Url: false */
 'use strict';
 
-describe('$location', function() {
+ddescribe('$location', function() {
   var url;
 
   beforeEach(module(provideLog));
@@ -264,6 +264,7 @@ describe('$location', function() {
       );
     });
 
+
     it('should prepend path with basePath', function() {
       url = new LocationHtml5Url('http://server/base/');
       url.$$parse('http://server/base/abc?a');
@@ -307,12 +308,21 @@ describe('$location', function() {
       });
 
 
-      it('should not encode !$:@', function() {
-        url.path('/!$:@');
+      it('should honor path delimiters and preserve encoded delimiters', function() {
+        url.path('/foo;ba%2Br/baz%3Bfoo/bar');
+        url.hash('');
+        url.search('');
+        expect(url.path()).toBe('/foo;ba%2Br/baz%3Bfoo/bar');
+        expect(url.absUrl()).toBe('http://www.domain.com:9877/foo;ba%2Br/baz%3Bfoo/bar');
+      })
+
+
+      it('should not encode !$:@;', function() {
+        url.path('/!$:@;');
         url.search('');
         url.hash('!$:@');
 
-        expect(url.absUrl()).toBe('http://www.domain.com:9877/!$:@#!$:@');
+        expect(url.absUrl()).toBe('http://www.domain.com:9877/!$:@;#!$:@');
       });
 
 

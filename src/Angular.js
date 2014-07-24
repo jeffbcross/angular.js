@@ -1150,11 +1150,40 @@ function toKeyValue(obj) {
  *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
  *                     / "*" / "+" / "," / ";" / "="
  */
-function encodeUriSegment(val) {
-  return encodeUriQuery(val, true).
-             replace(/%26/gi, '&').
-             replace(/%3D/gi, '=').
-             replace(/%2B/gi, '+');
+var subDelimsExp = /[\!\$'\(\)\*\+,;\=@:]/g;
+var encodedExp = /%[A-Z0-9]{2}/ig;
+function encodeUriSegment(segment) {
+  var match, segments, newSegment, matchIndex, encoded, endIndex;
+  if ((match = segment.match(encodedExp)) || (match = segment.match(subDelimsExp))) {
+    newSegment = '';
+    while (encoded = match.shift()) {
+      matchIndex = segment.indexOf(encoded);
+      if (matchIndex === 0) {
+        newSegment += encoded;
+      }
+      else {
+        var sub = segment.substring(0, matchIndex);
+        newSegment += encodeUriSegment(sub);
+        newSegment += encoded;
+      }
+
+      endIndex = match[0]?segment.indexOf(match[0]):null;
+      if (endIndex) {
+        newSegment += segment.substring(matchIndex + encoded.length, endIndex);
+      }
+      else {
+        newSegment += segment.substring(matchIndex + encoded.length);
+      }
+
+    }
+
+    segment = newSegment;
+  }
+  else {
+    segment = encodeURIComponent(segment);
+  }
+
+  return segment;
 }
 
 
