@@ -31,7 +31,7 @@ function phase {
     --version-number=$VERSION_NUMBER
 
   ../code.angularjs.org/unpublish.sh $ACTION_ARG $VERSION_NUMBER_ARG $VERBOSE_ARG
-  # ../bower/publish.sh $ACTION_ARG $VERBOSE_ARG
+  ../bower/unpublish.sh $ACTION_ARG $VERSION_NUMBER_ARG $VERBOSE_ARG
 }
 
 function run {
