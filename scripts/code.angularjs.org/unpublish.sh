@@ -15,7 +15,6 @@ function init {
   TMP_DIR=$(resolveDir ../../tmp)
   BUILD_DIR=$(resolveDir ../../build)
   REPO_DIR=$TMP_DIR/code.angularjs.org
-  NEW_VERSION=$(cat $BUILD_DIR/version.txt)
 }
 
 function prepare {
