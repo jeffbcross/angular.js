@@ -26,10 +26,11 @@ function init {
 
 function phase {
   ACTION_ARG="--action=$1"
+  VERSION_NUMBER_ARG="--version-number=$VERSION_NUMBER"
   ../angular.js/untag-release.sh $ACTION_ARG $VERBOSE_ARG\
     --version-number=$VERSION_NUMBER
 
-  # ../code.angularjs.org/publish.sh $ACTION_ARG $VERBOSE_ARG
+  ../code.angularjs.org/unpublish.sh $ACTION_ARG $VERSION_NUMBER_ARG $VERBOSE_ARG
   # ../bower/publish.sh $ACTION_ARG $VERBOSE_ARG
 }
 
