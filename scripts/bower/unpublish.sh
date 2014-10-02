@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script for updating the Angular bower repos from current local build.
+# Script for removing tags from the Angular bower repos
 
 echo "#################################"
 echo "#### Untag bower ################"
@@ -29,9 +29,6 @@ function init {
   )
 }
 
-
-
-
 function prepare {
   #
   # clone repos
@@ -44,15 +41,16 @@ function prepare {
 
   #
   # update bower.json
-  # tag each repo
+  # delete tag in each repo
   #
   for repo in "${REPOS[@]}"
   do
-    echo "-- Removing $NEW_VERSION tag from bower-$repo"
+    echo "-- Creating dummy git repo for bower-$repo with origin remote"
+    mkdir $TMP_DIR/bower-$repo
     cd $TMP_DIR/bower-$repo
+    git init
+    git remote add origin git@github.com:angular/bower-$repo.git
 
-    echo "-- Deleting tag v$VERSION_NUMBER in bower-$repo"
-    git tag -d v$VERSION_NUMBER
     cd $SCRIPT_DIR
   done
 }
@@ -62,7 +60,7 @@ function publish {
   do
     echo "-- Pushing bower-$repo"
     cd $TMP_DIR/bower-$repo
-    git push origin v$NEW_VERSION
+    git push origin :v$VERSION_NUMBER
     cd $SCRIPT_DIR
   done
 }

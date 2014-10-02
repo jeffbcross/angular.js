@@ -42,8 +42,4 @@ function run {
   phase publish
 }
 
-echo $VERSION_NUMBER
-# Will need to change the angular.js CHANGELOG.md manually
-git tag -d $VERSION_NUMBER
-
 source $(dirname $0)/../utils.inc

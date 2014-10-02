@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Script for updating code.angularjs.org repo from current local build.
+# Script for removing specified release dir from code.angularjs.org.
 
-echo "#################################"
-echo "## Update code.angular.js.org ###"
-echo "#################################"
+echo "################################################"
+echo "## Remove a version from code.angular.js.org ###"
+echo "################################################"
 
 ARG_DEFS=(
   "--action=(prepare|publish)"
@@ -22,27 +22,24 @@ function prepare {
   git clone git@github.com:angular/code.angularjs.org.git $REPO_DIR
 
   #
-  # copy the files from the build
+  # Remove the files from the repo
   #
   echo "-- Removing $VERSION_NUMBER from code.angularjs.org"
   cd $REPO_DIR
   git rm -r $VERSION_NUMBER
 
-  #
-  # commit
-  #
-  echo "-- Committing code.angularjs.org"
+  echo "-- Committing removal to code.angularjs.org"
   git commit -m "removing v$VERSION_NUMBER"
 }
 
 function _update_code() {
   cd $REPO_DIR
 
-  echo "-- Pushing code.angularjs.org"
+  echo "-- Pushing code.angularjs.org to github"
   git push origin master
 
 
-  echo "-- Refreshing code.angularjs.org: backend=$backend"
+  echo "-- Propagating update to server code.angularjs.org"
   curl https://code.angularjs.org/gitFetchSite.php
 
 }

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Tags a release
-# so that travis can do the actual release.
+# Untags a release.
 
 echo "###################################"
 echo "## Untag angular.js for a release #"
@@ -29,12 +28,12 @@ function init {
 }
 
 function prepare() {
-  git tag -d "$TAG_NAME"
+  #no-op since publish does everything
 }
 
 function publish() {
   # push the tag deletion to github
-  git push origin ":refs/tags/$TAG_NAME"
+  git push origin ":$TAG_NAME"
 }
 
 source $(dirname $0)/../utils.inc
