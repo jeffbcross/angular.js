@@ -13,27 +13,30 @@ ARG_DEFS=(
   "--version-number=([0-9]+\.[0-9]+\.[0-9]+(-[a-z]+\.[0-9]+)?)"
 )
 
-function checkVersionNumber() {
-  BRANCH_PATTERN=$(readJsonProp "package.json" "branchVersion")
-  if [[ $VERSION_NUMBER != $BRANCH_PATTERN ]]; then
-    echo "version-number needs to match $BRANCH_PATTERN on this branch"
-    usage
-  fi
-}
-
 function init {
-  cd ../..
-  checkVersionNumber
+  TMP_DIR=$(resolveDir ../../tmp)
   TAG_NAME="v$VERSION_NUMBER"
 }
 
 function prepare() {
-  #no-op since publish does everything
+  tags=`git ls-remote --tags git@github.com:angular/angular.js`
+  if [[ $tags =~ "refs/tags/v$VERSION_NUMBER^" ]]; then
+    echo "-- Creating dummy git repo for angular.js with origin remote"
+    mkdir $TMP_DIR/empty-angular.js
+    cd $TMP_DIR/empty-angular.js
+    git init
+    git remote add origin git@github.com:angular/angular.js.git
+  else
+    echo "-- Tag v$VERSION_NUMBER does not exist on remote. Moving on"
+  fi
 }
 
 function publish() {
   # push the tag deletion to github
-  git push origin ":$TAG_NAME"
+  if [ -d "$TMP_DIR/empty-angular.js" ]; then
+    cd $TMP_DIR/empty-angular.js
+    git push origin ":$TAG_NAME"
+  fi
 }
 
 source $(dirname $0)/../utils.inc

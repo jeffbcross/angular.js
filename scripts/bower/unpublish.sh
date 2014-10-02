@@ -13,7 +13,6 @@ ARG_DEFS=(
 
 function init {
   TMP_DIR=$(resolveDir ../../tmp)
-  BUILD_DIR=$(resolveDir ../../build)
   REPOS=(
     angular
     angular-animate
@@ -30,26 +29,19 @@ function init {
 }
 
 function prepare {
-  #
-  # clone repos
-  #
   for repo in "${REPOS[@]}"
   do
-    echo "-- Cloning bower-$repo"
-    git clone git@github.com:angular/bower-$repo.git $TMP_DIR/bower-$repo
-  done
+    tags=`git ls-remote --tags git@github.com:angular/bower-$repo`
+    if [[ $tags =~ "refs/tags/v$VERSION_NUMBER" ]]; then
+      echo "-- Creating dummy git repo for bower-$repo with origin remote"
+      mkdir $TMP_DIR/bower-$repo
+      cd $TMP_DIR/bower-$repo
+      git init
+      git remote add origin git@github.com:angular/bower-$repo.git
+    else
+      echo "-- No remote tag matching v$VERSION_NUMBER exists on bower-$repo"
+    fi
 
-  #
-  # update bower.json
-  # delete tag in each repo
-  #
-  for repo in "${REPOS[@]}"
-  do
-    echo "-- Creating dummy git repo for bower-$repo with origin remote"
-    mkdir $TMP_DIR/bower-$repo
-    cd $TMP_DIR/bower-$repo
-    git init
-    git remote add origin git@github.com:angular/bower-$repo.git
 
     cd $SCRIPT_DIR
   done
@@ -58,10 +50,14 @@ function prepare {
 function publish {
   for repo in "${REPOS[@]}"
   do
-    echo "-- Pushing bower-$repo"
-    cd $TMP_DIR/bower-$repo
-    git push origin :v$VERSION_NUMBER
-    cd $SCRIPT_DIR
+    if [ -d "$TMP_DIR/bower-$repo" ]; then
+      echo "-- Deleting v$VERSION_NUMBER tag from bower-$repo"
+      cd $TMP_DIR/bower-$repo
+      git push origin :v$VERSION_NUMBER
+      cd $SCRIPT_DIR
+    else
+      echo "-- No directory exists for this bower-$repo (presumably because no remote tag)"
+    fi
   done
 }
 

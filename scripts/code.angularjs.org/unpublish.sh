@@ -13,8 +13,8 @@ ARG_DEFS=(
 
 function init {
   TMP_DIR=$(resolveDir ../../tmp)
-  BUILD_DIR=$(resolveDir ../../build)
   REPO_DIR=$TMP_DIR/code.angularjs.org
+  echo "code tmp $TMP_DIR"
 }
 
 function prepare {
@@ -26,26 +26,20 @@ function prepare {
   #
   echo "-- Removing $VERSION_NUMBER from code.angularjs.org"
   cd $REPO_DIR
-  git rm -r $VERSION_NUMBER
-
-  echo "-- Committing removal to code.angularjs.org"
-  git commit -m "removing v$VERSION_NUMBER"
+  if [ -d "$VERSION_NUMBER" ]; then
+    git rm -r $VERSION_NUMBER
+    echo "-- Committing removal to code.angularjs.org"
+    git commit -m "removing v$VERSION_NUMBER"
+  else
+    echo "-- Version: $VERSION_NUMBER does not exist in code.angularjs.org!"
+  fi
 }
 
-function _update_code() {
+function publish {
   cd $REPO_DIR
 
   echo "-- Pushing code.angularjs.org to github"
   git push origin master
-
-
-  echo "-- Propagating update to server code.angularjs.org"
-  curl https://code.angularjs.org/gitFetchSite.php
-
-}
-
-function publish {
-  _update_code
 }
 
 source $(dirname $0)/../utils.inc

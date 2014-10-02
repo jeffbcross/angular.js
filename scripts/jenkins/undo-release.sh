@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# tags the current commit as a release and publishes all artifacts to
-# the different repositories.
-# Note: This will also works if the commit is in the past!
-
 echo "#################################"
 echo "#### undo a release  ############"
 echo "#################################"
