@@ -407,12 +407,11 @@ describe('select', function() {
         });
 
         describe('selectController.hasOption', function() {
-          it('should return true for options added via ngOptions', function() {
+          it('should return false for options shifted via ngOptions', function() {
             scope.robots = [
               {key: 1, value: 'c3p0'},
               {key: 2, value: 'r2d2'}
             ];
-            scope.robot = 'r2d2';
 
             compile('<select ng-model="robot" ' +
                       'ng-options="item.key as item.value for item in robots">' +
@@ -420,8 +419,25 @@ describe('select', function() {
 
             var selectCtrl = element.data().$selectController;
 
-            expect(selectCtrl.hasOption('c3p0')).toBe(true);
+            scope.$apply(function() {
+              scope.robots.shift();
+            });
+
+            expect(selectCtrl.hasOption('c3p0')).toBe(false);
             expect(selectCtrl.hasOption('r2d2')).toBe(true);
+          });
+
+          it('should return false for options popped via ngOptions', function() {
+            scope.robots = [
+              {key: 1, value: 'c3p0'},
+              {key: 2, value: 'r2d2'}
+            ];
+
+            compile('<select ng-model="robot" ' +
+                      'ng-options="item.key as item.value for item in robots">' +
+                    '</select>');
+
+            var selectCtrl = element.data().$selectController;
 
             scope.$apply(function() {
               scope.robots.pop();
@@ -429,9 +445,21 @@ describe('select', function() {
 
             expect(selectCtrl.hasOption('c3p0')).toBe(true);
             expect(selectCtrl.hasOption('r2d2')).toBe(false);
+          });
+
+          it('should return true for options added via ngOptions', function() {
+            scope.robots = [
+              {key: 2, value: 'r2d2'}
+            ];
+
+            compile('<select ng-model="robot" ' +
+                      'ng-options="item.key as item.value for item in robots">' +
+                    '</select>');
+
+            var selectCtrl = element.data().$selectController;
 
             scope.$apply(function() {
-              scope.robots.push({key: 2, value: 'r2d2'});
+              scope.robots.unshift({key: 1, value: 'c3p0'});
             });
 
             expect(selectCtrl.hasOption('c3p0')).toBe(true);
@@ -516,12 +544,11 @@ describe('select', function() {
     });
 
     describe('selectController.hasOption', function() {
-      it('should return true for options added via ngOptions', function() {
+      it('should return false for options shifted via ngOptions', function() {
         scope.robots = [
           {key: 1, value: 'c3p0'},
           {key: 2, value: 'r2d2'}
         ];
-        scope.robot = 'r2d2';
 
         compile('<select ng-model="robot" multiple ' +
                   'ng-options="item.key as item.value for item in robots">' +
@@ -529,8 +556,25 @@ describe('select', function() {
 
         var selectCtrl = element.data().$selectController;
 
-        expect(selectCtrl.hasOption('c3p0')).toBe(true);
+        scope.$apply(function() {
+          scope.robots.shift();
+        });
+
+        expect(selectCtrl.hasOption('c3p0')).toBe(false);
         expect(selectCtrl.hasOption('r2d2')).toBe(true);
+      });
+
+      it('should return false for options popped via ngOptions', function() {
+        scope.robots = [
+          {key: 1, value: 'c3p0'},
+          {key: 2, value: 'r2d2'}
+        ];
+
+        compile('<select ng-model="robot" multiple ' +
+                  'ng-options="item.key as item.value for item in robots">' +
+                '</select>');
+
+        var selectCtrl = element.data().$selectController;
 
         scope.$apply(function() {
           scope.robots.pop();
@@ -538,9 +582,21 @@ describe('select', function() {
 
         expect(selectCtrl.hasOption('c3p0')).toBe(true);
         expect(selectCtrl.hasOption('r2d2')).toBe(false);
+      });
+
+      it('should return true for options added via ngOptions', function() {
+        scope.robots = [
+          {key: 2, value: 'r2d2'}
+        ];
+
+        compile('<select ng-model="robot" multiple ' +
+                  'ng-options="item.key as item.value for item in robots">' +
+                '</select>');
+
+        var selectCtrl = element.data().$selectController;
 
         scope.$apply(function() {
-          scope.robots.push({key: 2, value: 'r2d2'});
+          scope.robots.unshift({key: 1, value: 'c3p0'});
         });
 
         expect(selectCtrl.hasOption('c3p0')).toBe(true);
